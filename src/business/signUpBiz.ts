@@ -1,35 +1,40 @@
-const insertUser = require("../data/users/insertUser.js");
-const checkDuplicateEmail = require("../data/users/checkDuplicateEmail.js");
-const generateHash = require("../data/users/hashGenerator");
+import { inputValidator } from "../utils/inputValidator";
+import { UserDTO } from "../interfaces/UserDTO";
+import { User } from "../interfaces/User";
 
-export interface userDTO {
-  email: string;
-  password: string;
-  name: string;
-}
+const signUpBiz = async (
+	input: UserDTO,
+	validateEmail: (email: string) => string,
+	emailDuplicateValidator: (email: string) => any,
+	generateHash: (password: string) => string,
+	insertUser: (user: UserDTO, passwordHash: string) => void
+) => {
+	try {
+		inputValidator(input.email, "Email");
+		inputValidator(input.password, "Password");
+		inputValidator(input.name, "Name");
+		inputValidator(input.nickname, "Nickname");
 
-const signUpBiz = async (input: userDTO) => {
-  try {
-    const checkEmail = await checkDuplicateEmail(input.email);
-    if (checkEmail === true) {
-      throw new Error("Email already registered");
-    }
+		validateEmail(input.email);
 
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (!emailRegex.test(input.email)) {
-      throw new Error("Invalid Email");
-    }
+		await emailDuplicateValidator(input.email);
 
-    if (input.password.length < 6 || input.password.length > 30) {
-      throw new Error("Invalid Password");
-    }
+		if (input.password.length < 6 || input.password.length > 30)
+			throw new Error("Invalid Password");
 
-    const passwordHash = await generateHash(input.password);
-    await insertUser(input, passwordHash);
-    return "User registered successfully";
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
+		const passwordHash = generateHash(input.password);
+
+		await insertUser(input, passwordHash);
+
+		const user = {
+			name: input.name,
+			email: input.email,
+		};
+
+		return user;
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
 };
 
 export default signUpBiz;

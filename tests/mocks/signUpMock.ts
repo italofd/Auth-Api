@@ -1,9 +1,8 @@
 import { UserDTO } from "../../src/interfaces/UserDTO";
 import signUpBiz from "../../src/business/signUpBiz";
-import validateEmail from "../../src/utils/validateEmail";
+import { validateEmail } from "../../src/utils/validateEmail";
 import { idGeneratorMock } from "./idGeneratorMock";
 import { User } from "../../src/interfaces/User";
-import { generateHashMock } from "./generateHashMock";
 
 const signUpMock = (input: UserDTO) => {
 	console.log(input);
@@ -19,13 +18,13 @@ const signUpMock = (input: UserDTO) => {
 		password: input.password,
 	} as User;
 
-	const emailDuplicateValidator = async (email: string): Promise<User> => user;
+	const emailDuplicateValidator = async (email: string): Promise<any> => "asd";
 
 	const token = signUpBiz(
 		user,
 		validateEmail,
 		emailDuplicateValidator,
-		generateHashMock,
+		idGeneratorMock,
 		insertUser
 	);
 

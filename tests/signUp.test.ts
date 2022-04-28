@@ -91,20 +91,20 @@ describe("Authentication test suite", () => {
 			}
 		}
 	});
-	// it("Should return an invalid password error", async () => {
-	// 	try {
-	// 		const user = {
-	// 			uid: idGeneratorMock(),
-	// 			name: "John Coltrane",
-	// 			email: "john.coltrane@hotmail.com",
-	// 			password: "qwe",
-	// 			nickname: "Coltrane",
-	// 		};
-	// 		await signUpMock(user);
-	// 	} catch (error) {
-	// 		if (error instanceof Error) {
-	// 			expect(error.message).toContain("Invalid Password");
-	// 		}
-	// 	}
-	// });
+	it("Should return an invalid password error", async () => {
+		try {
+			const user = {
+				uid: idGeneratorMock(),
+				name: "John Coltrane",
+				email: "john.coltrane@hotmail.com",
+				password: "qwe",
+				nickname: "Coltrane",
+			};
+			await signUpMock(user);
+		} catch (error) {
+			if (error instanceof Error) {
+				expect(error.message).toContain("Invalid Password");
+			}
+		}
+	});
 });
